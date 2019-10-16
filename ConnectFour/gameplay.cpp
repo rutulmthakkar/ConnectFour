@@ -5,12 +5,16 @@
 //Optional Implemented and Tested : J, K
 
 #include <iostream>
+#include <climits>
 
 using namespace std;
 
-const int COLUMNS = 7;
-const int ROWS = 6;
-char grid[ROWS][COLUMNS] = {};
+const int COLUMNS_MAX = 20;
+const int ROWS_MAX = 20;
+int ROWS = 0;
+int COLUMNS = 0;
+int countToWin = 3;
+char grid[ROWS_MAX][COLUMNS_MAX] = {};
 bool turn = true; //using boolean to switch player turns
 int won = -1; // -1 game not finished yet, 0 is tie. 1 is won 
 int noOfWinsPlayerX = 0;
@@ -40,163 +44,420 @@ int main() {
 	system("CLS");
 
 	cout << "CONNECT FOUR" << endl;
-	cout << "Do you want to allow wrap around ? (Press Y or y to enable) ";
-	cin >> wrap;
-	if (wrap == 'Y' || wrap == 'y') {
-		isWrapAroundOn = true;
-	}
-	else {
-		isWrapAroundOn = false;
-	}
-
-	cout << "Do you want to allow player to remove an inserted piece? (Press Y or y to enable) ";
-	cin >> remove;
-	if (remove == 'Y' || remove == 'y') {
-		isRemoveOn = true;
-	}
-	else {
-		isRemoveOn = false;
+	inputRows:
+	cout << "Enter the number between 4 and 20 for no of rows: ";
+	while (!(cin >> ROWS)) {
+		// not an integer
+		cout << "Please enter a number between 4 and 20 (including these two nos!)" << endl;
+		cout << "Enter the number between 4 and 20 for no of rows: ";
+		//clear the previous input
+		cin.clear();
+		//discarding previous input		
+		cin.ignore(INT_MAX,'\n');
 	}
 
-	system("pause");
-
-	
-	system("CLS");
-
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
-			grid[i][j] = '*';
+	if (ROWS >= 4 && ROWS <= 20) {
+		inputColumns:
+		cout << "Enter a number between 4 and 20 for no of columns: ";
+		while (!(cin >> COLUMNS)) {
+			// not an integer
+			cout << "Please enter a number between 4 and 20 (including these two nos!)" << endl;
+			cout << "Enter a number between 4 and 20 for no of columns: ";
+			//clear the previous input
+			cin.clear();
+			//discarding previous input
+			cin.ignore(INT_MAX, '\n');
 		}
-	}
 
-	printGrid();
+		if (COLUMNS >= 4 && COLUMNS <= 20) {
+			inputWin:
+			cout << "Enter a number between 3 and 20 for no of pieces required to win the game: ";
 
-	while (true) {
-		if (turn) {
-			userSelectedToRemove = false; // resetting
-			char ch;
-			cout << "\n\n Player X turn: " << "\n\n";
-			beginX:
-			if (isRemoveOn) {
-				cout << "Do you want to [A]dd a piece or [R]emove a piece ? ";
-				cin >> ch;
-				if (ch == 'A' || ch == 'a') {
-					userSelectedToRemove = false;
-				}
-				else if (ch == 'R' || ch == 'r') {
-					userSelectedToRemove = true;
+			while (!(cin >> countToWin)) {
+				// not an integer
+				cout << "Please enter a number between 3 and 20 (including these two nos!)" << endl;
+				cout << "Enter No to pieces required to win : ";
+				//clear the previous input
+				cin.clear();
+				//discarding previous input
+				cin.ignore(INT_MAX, '\n');
+			}
+
+			if (countToWin >= 3 && countToWin <= 20) {
+				cout << "Do you want to allow wrap around ? (Press Y or y to enable) ";
+				cin >> wrap;
+				if (wrap == 'Y' || wrap == 'y') {
+					isWrapAroundOn = true;
 				}
 				else {
-					cout << "Invalid input ! Please enter A to add a piece or R to remove a piece !" << endl;
-					goto beginX;
+					isWrapAroundOn = false;
 				}
-				if (userSelectedToRemove) {
-					cout << "Enter your column No to remove : ";
+
+				cout << "Do you want to allow player to remove an inserted piece? (Press Y or y to enable) ";
+				cin >> remove;
+				if (remove == 'Y' || remove == 'y') {
+					isRemoveOn = true;
 				}
 				else {
-					cout << "Enter your column No to insert : ";
+					isRemoveOn = false;
+				}
+
+				system("pause");
+
+
+				system("CLS");
+
+				for (int i = 0; i < ROWS; i++) {
+					for (int j = 0; j < COLUMNS; j++) {
+						grid[i][j] = '*';
+					}
+				}
+
+				printGrid();
+
+				while (true) {
+					if (turn) {
+						userSelectedToRemove = false; // resetting
+						char ch;
+						cout << "\n\n Player X turn: " << "\n\n";
+
+					beginX:
+
+						if (isRemoveOn) {
+							cout << "Do you want to [A]dd a piece or [R]emove a piece ? ";
+							cin >> ch;
+							if (ch == 'A' || ch == 'a') {
+								userSelectedToRemove = false;
+							}
+							else if (ch == 'R' || ch == 'r') {
+								userSelectedToRemove = true;
+							}
+							else {
+								cout << "Invalid input ! Please enter A to add a piece or R to remove a piece !" << endl;
+								goto beginX;
+							}
+							if (userSelectedToRemove) {
+								cout << "Enter your column No to remove : ";
+							}
+							else {
+								cout << "Enter your column No to insert : ";
+							}
+						}
+						else {
+							cout << "Enter your column No to insert : ";
+						}
+					}
+					else {
+						userSelectedToRemove = false; // resetting
+						char ch;
+						cout << "\n\n Player O turn: " << "\n\n";
+
+					beginO:
+
+						if (isRemoveOn) {
+							cout << "Do you want to [A]dd a piece or [R]emove a piece ? ";
+							cin >> ch;
+							if (ch == 'A' || ch == 'a') {
+								userSelectedToRemove = false;
+							}
+							else if (ch == 'R' || ch == 'r') {
+								userSelectedToRemove = true;
+							}
+							else {
+								cout << "Invalid input ! Please enter A to add a piece or R to remove a piece !" << endl;
+								goto beginO;
+							}
+							if (userSelectedToRemove) {
+								cout << "Enter your column No to remove : ";
+							}
+							else {
+								cout << "Enter your column No to insert : ";
+							}
+						}
+						else {
+							cout << "Enter your column No to insert : ";
+						}
+					}
+					while (!(cin >> choice)) {
+						// not an integer
+						cout << "Please enter a number between 1 and " << COLUMNS << " (including these two nos!)" << endl;
+						cout << "Enter your column No to insert : ";
+						//clear the previous input
+						cin.clear();
+						//discarding previous input
+						cin.ignore(INT_MAX, '\n');
+
+					}
+					if (choice > 0 && choice <= 20) {
+						// column array starts from 0 hence passing 1 number less (0 to 6)
+						switch (choice) {
+						case 1:
+							if (choice <= COLUMNS) {
+								gamePlay(0);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 2:
+							if (choice <= COLUMNS) {
+								gamePlay(1);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 3:
+							if (choice <= COLUMNS) {
+								gamePlay(2);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 4:
+							if (choice <= COLUMNS) {
+								gamePlay(3);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 5:
+							if (choice <= COLUMNS) {
+								gamePlay(4);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 6:
+							if (choice <= COLUMNS) {
+								gamePlay(5);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 7:
+							if (choice <= COLUMNS) {
+								gamePlay(6);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 8:
+							if (choice <= COLUMNS) {
+								gamePlay(7);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 9:
+							if (choice <= COLUMNS) {
+								gamePlay(8);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 10:
+							if (choice <= COLUMNS) {
+								gamePlay(9);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 11:
+							if (choice <= COLUMNS) {
+								gamePlay(10);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 12:
+							if (choice <= COLUMNS) {
+								gamePlay(11);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 13:
+							if (choice <= COLUMNS) {
+								gamePlay(12);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 14:
+							if (choice <= COLUMNS) {
+								gamePlay(13);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 15:
+							if (choice <= COLUMNS) {
+								gamePlay(14);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 16:
+							if (choice <= COLUMNS) {
+								gamePlay(15);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 17:
+							if (choice <= COLUMNS) {
+								gamePlay(16);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 18:
+							if (choice <= COLUMNS) {
+								gamePlay(17);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 19:
+							if (choice <= COLUMNS) {
+								gamePlay(18);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						case 20:
+							if (choice <= COLUMNS) {
+								gamePlay(19);
+								if (won != -1) {
+									goto endGame;
+								}
+							}
+							else {
+								cout << "Invalid selection ! Please try again !" << endl;
+							}
+							break;
+						default:
+							cout << "Invalid selection ! Please try again !" << endl;
+						}
+					}
+					else {
+						cout << "Please enter a number between 1 and " << COLUMNS << " (including these two nos!)" << endl;
+					}
+
+
+				}
+			endGame:
+				char restart = 'N';
+				cout << "Do you want to start a new Game (Enter Y or y to continue) ? ";
+				cin >> restart;
+				system("pause");
+				if (restart == 'Y' || restart == 'y') {
+					goto newgame;
 				}
 			}
 			else {
-				cout << "Enter your column No to insert : ";
+				cout << "Please enter a number between 3 and 20 (including these two no)! " << endl;
+				goto inputWin;
 			}
 		}
 		else {
-			userSelectedToRemove = false; // resetting
-			char ch;
-			cout << "\n\n Player O turn: " << "\n\n";
-			beginO:
-			if (isRemoveOn) {
-				cout << "Do you want to [A]dd a piece or [R]emove a piece ? ";
-				cin >> ch;
-				if (ch == 'A' || ch == 'a') {
-					userSelectedToRemove = false;
-				}
-				else if (ch == 'R' || ch == 'r') {
-					userSelectedToRemove = true;
-				}
-				else {
-					cout << "Invalid input ! Please enter A to add a piece or R to remove a piece !" << endl;
-					goto beginO;
-				}
-				if (userSelectedToRemove) {
-					cout << "Enter your column No to remove : ";
-				}
-				else {
-					cout << "Enter your column No to insert : ";
-				}
-			}
-			else {
-				cout << "Enter your column No to insert : ";
-			}
-		}
-		cin >> choice;
-
-		// column array starts from 0 hence passing 1 number less (0 to 6)
-		switch (choice) {
-			case 1:
-				gamePlay(0);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 2:
-				gamePlay(1);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 3:
-				gamePlay(2);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 4:
-				gamePlay(3);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 5: 
-				gamePlay(4);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 6:
-				gamePlay(5);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			case 7: 
-				gamePlay(6);
-				if (won != -1) {
-					goto endGame;
-				}
-				break;
-			default: 
-				cout << "Invalid selection ! Please try again !" << endl;
+			cout << "Please enter a number between 4 and 20 (including these two nos!)" << endl;
+			goto inputColumns;
 		}
 	}
-
-	endGame:
-	char restart = 'N';
-	cout << "Do you want to start a new Game (Enter Y or y to continue) ? ";
-	cin >> restart;
-	system("pause");
-	if (restart == 'Y' || restart == 'y') {
-		goto newgame;
+	else {
+		cout << "Please enter a number between 4 and 20 (including these two nos!)" << endl;
+		goto inputRows;
 	}
+
+	
 	return 0;
 }
 
 void printGrid() {
-	cout << "1 2 3 4 5 6 7" << endl;
+	for (int i = 0; i < COLUMNS; i++) {
+		cout << i + 1 << "\t";
+	}
+	cout << endl;
+
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
-			cout << grid[i][j] << " ";
+				cout << grid[i][j] << "\t";
 		}
 		cout << "\n";
 	}
@@ -228,8 +489,207 @@ bool isColumnEmpty(int columnID) {
 	}
 }
 
+
 void checkIfWonWrapMode() {
-	int c1 = 0, c2 = 1, c3 = (COLUMNS - 2), c4 = (COLUMNS - 1);
+	//new code
+	
+	int startPos = countToWin - 1;
+	int cnt = 0;
+	int k = 0; // using this for iterating till countToWin for diagonals.
+
+	//horizontal for X
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			if (grid[i][(startPos + COLUMNS - j) % COLUMNS] == 'X') {
+				cnt++;
+			}
+			else {
+				cnt = 0;
+			}
+			if (cnt == countToWin) {
+				noOfWinsPlayerX++;
+				cnt = 0;
+				break;
+			}
+		}
+	}
+
+	//horizontal for O
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			if (grid[i][(startPos + COLUMNS - j) % COLUMNS] == 'O') {
+				cnt++;
+			}
+			else {
+				cnt = 0;
+			}
+			if (cnt == countToWin) {
+				noOfWinsPlayerO++;
+				cnt = 0;
+				break;
+			}
+		}
+	}
+
+	//diagonal downwards towards bottom right for X ( +1 row, +1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i + m) % ROWS][(j + m) % COLUMNS] == 'X') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerX++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+	//diagonal downwards towards bottom right for O ( +1 row, +1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i + m) % ROWS][(j + m) % COLUMNS] == 'O') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerO++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+	//diagonal downwards towards bottom left for X ( +1 row, -1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i + m) % ROWS][(j - m) % COLUMNS] == 'X') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerX++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+	//diagonal downwards towards bottom left for O ( +1 row, -1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i + m) % ROWS][(j - m) % COLUMNS] == 'O') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerO++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+	//diagonal upwards towards top right for X ( -1 row, +1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i - m) % ROWS][(j + m) % COLUMNS] == 'X') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerX++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+	//diagonal upwards towards top right for O ( -1 row, +1 column)
+	cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			for (int m = 0; m < countToWin; m++) {
+				if (grid[(i - m) % ROWS][(j + m) % COLUMNS] == 'O') {
+					cnt++;
+				}
+				else {
+					cnt = 0;
+				}
+
+				if (cnt == countToWin) {
+					noOfWinsPlayerO++;
+					cnt = 0;
+					break;
+				}
+			}
+		}
+	}
+
+
+	/*cnt = 0;
+	for (int i = 0; i < ROWS; i++) {
+		cnt = 0;
+		for (int j = 0; j < COLUMNS; j++) {
+			if (grid[(startPos + j + ROWS) % ROWS][(startPos + 1 + j + COLUMNS) % COLUMNS] == 'O') {
+				cout << "Position : ROW  " << (startPos + j + ROWS) % ROWS << " COLUMN " << (startPos + 1 + j + COLUMNS) % COLUMNS << " HAS O !" << endl;
+				cnt++;
+				cout << "count is " << cnt << endl;
+			}
+			else {
+				cout << "Position : ROW  " << (startPos + j + ROWS) % ROWS << " COLUMN " << (startPos + 1 + j + COLUMNS) % COLUMNS << " DOESNOT HAVE O !" << endl;
+				cout << "resetting count to 0" << endl;
+				cnt = 0;
+			}
+
+			if (cnt == countToWin) {
+				cout << "got enough to consider a win for O" << endl;
+				noOfWinsPlayerO++;
+				cnt = 0;
+				break;
+			}
+		}
+	}*/
+
+	//old code
+	/*int c1 = 0, c2 = 1, c3 = (COLUMNS - 2), c4 = (COLUMNS - 1);
 
 	for (int i = 0; i < ROWS; i++) {
 		//horizontal
@@ -262,7 +722,8 @@ void checkIfWonWrapMode() {
 				noOfWinsPlayerO++;
 			}
 		}
-	}
+	}*/
+
 }
 
 bool checkIfWon(int rowID, int columnID, char c) {
@@ -276,7 +737,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			if (columnID == 0) {
 				//top left corner
 				//checking horizontal
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -287,7 +748,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -295,7 +756,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				//checking vertical
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -306,7 +767,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -314,7 +775,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				//checking diagonal (top left towards bottom right)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -325,7 +786,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -335,7 +796,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			else if (columnID == (COLUMNS - 1)) {
 				//top right corner
 				// checking horizontal
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -346,7 +807,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -354,8 +815,8 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical
-				for (int i = 1; i < 4; i++) {
-					bool isInside = checkIfInside(rowID + 1, columnID, c);
+				for (int i = 1; i < countToWin; i++) {
+					bool isInside = checkIfInside(rowID + i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
 						flag = false;
@@ -365,7 +826,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -373,7 +834,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (top right towards bottom left)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -384,7 +845,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -395,7 +856,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				//top row
 
 				// checking horizontal left side
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -406,7 +867,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -414,7 +875,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking horizontal right side
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -425,7 +886,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -433,7 +894,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -444,7 +905,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -452,7 +913,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal left side down
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -463,7 +924,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -471,7 +932,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal right side down
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -482,7 +943,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition;
 				}
 				else {
@@ -491,7 +952,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			checkCondition:
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				flag = true;
 				break;
 			}
@@ -502,7 +963,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				//bottom left
 
 				// checking horizontal
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -513,7 +974,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -521,7 +982,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical (upwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i , columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -532,7 +993,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -540,7 +1001,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (bottom left to top right)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -551,7 +1012,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -563,7 +1024,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				//first column
 
 				// checking horizontal
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -574,7 +1035,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -582,7 +1043,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical (upwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i , columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -593,7 +1054,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -601,7 +1062,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical (downwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -612,7 +1073,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -620,7 +1081,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (upwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -631,7 +1092,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -639,7 +1100,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (downwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID + i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -650,7 +1111,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition2;
 				}
 				else {
@@ -659,7 +1120,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			checkCondition2:
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				flag = true;
 				break;
 			}
@@ -670,7 +1131,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				// bottom right
 
 				// checking horizontal
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -681,7 +1142,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -689,7 +1150,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical (upwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -700,7 +1161,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -708,7 +1169,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (bottom right towards top left)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -719,7 +1180,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -729,7 +1190,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			else {
 				//last row
 				// checking horizontal (left side)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -740,7 +1201,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -748,7 +1209,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking horizontal (right side)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -759,7 +1220,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -767,7 +1228,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking vertical (upwards)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -778,7 +1239,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -786,7 +1247,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (towards top left)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID - i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -797,7 +1258,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -805,7 +1266,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 				}
 
 				// checking diagonal (towards top right)
-				for (int i = 1; i < 4; i++) {
+				for (int i = 1; i < countToWin; i++) {
 					bool isInside = checkIfInside(rowID - i, columnID + i, c);
 					if (!isInside) { // false
 						tempCnt = 0;
@@ -816,7 +1277,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 						tempCnt++;
 					}
 				}
-				if (tempCnt == 3) {
+				if (tempCnt == (countToWin - 1)) {
 					goto checkCondition3;
 				}
 				else {
@@ -825,7 +1286,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			checkCondition3:
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				flag = true;
 				break;
 			}
@@ -834,7 +1295,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			//last column
 			int tempCnt = 0;
 			// checking horizontal
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID, columnID - i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -845,7 +1306,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition4;
 			}
 			else {
@@ -853,7 +1314,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking vertical (upwards)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -864,7 +1325,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition4;
 			}
 			else {
@@ -872,7 +1333,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards top left)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID - i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -883,7 +1344,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition4;
 			}
 			else {
@@ -891,7 +1352,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards top right)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID + i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -904,7 +1365,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 			
 			checkCondition4:
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				flag = true;
 				break;
 			}
@@ -913,7 +1374,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			//middle
 			int tempCnt = 0;
 			// checking horizontal (left side)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID, columnID - i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -924,7 +1385,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -932,7 +1393,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking horizontal (right side)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID, columnID + i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -943,7 +1404,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -951,7 +1412,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking vertical (upwards)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -962,7 +1423,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -970,7 +1431,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking vertical (downwards)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID + i, columnID, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -981,7 +1442,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -989,7 +1450,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards top left)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID - i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -1000,7 +1461,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -1008,7 +1469,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards top right)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID - i, columnID + i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -1019,7 +1480,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -1027,7 +1488,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards bottom left)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID + i, columnID - i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -1038,7 +1499,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 					tempCnt++;
 				}
 			}
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				goto checkCondition5;
 			}
 			else {
@@ -1046,7 +1507,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 
 			// checking diagonal (towards bottom right)
-			for (int i = 1; i < 4; i++) {
+			for (int i = 1; i < countToWin; i++) {
 				bool isInside = checkIfInside(rowID + i, columnID + i, c);
 				if (!isInside) { // false
 					tempCnt = 0;
@@ -1059,7 +1520,7 @@ bool checkIfWon(int rowID, int columnID, char c) {
 			}
 			
 			checkCondition5:
-			if (tempCnt == 3) {
+			if (tempCnt == (countToWin - 1)) {
 				flag = true;
 				break;
 			}
